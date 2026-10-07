@@ -1212,6 +1212,8 @@ select:hover {
 ================================ */
 
 .calendar-container {
+    max-width: 100%;      
+    min-width: 0;
     background: white;
     padding: 24px;
     border-radius: 14px;
@@ -1260,7 +1262,7 @@ select:hover {
 
 .weekdays {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));  
     gap: 6px;
     margin-top: 16px;
     text-align: center;
@@ -1276,8 +1278,9 @@ select:hover {
 }
 
 .calendar-days {
+    min-width: 0;
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 6px;
     margin-top: 8px;
 }
@@ -1816,7 +1819,7 @@ select:hover {
     .calendar-day .holiday-label,
     .calendar-day .sunday-label {
         font-size: 8px;
-        max-width: 55px;
+        max-width: 100%; 
         padding: 1px 4px;
     }
     
@@ -1877,8 +1880,8 @@ select:hover {
     .calendar-day .holiday-label,
     .calendar-day .sunday-label {
         font-size: 7px;
-        max-width: 40px;
-        padding: 1px 3px;
+        max-width: 100%;
+        padding: 1px 2px;
     }
     
     .weekdays {
@@ -1899,4 +1902,25 @@ select:hover {
     .add-box input {
         min-width: 100%;
     }
+    .page-container {
+    padding: 20px 10px 40px;
+   }
+   
+   .calendar-container {
+       padding: 10px;
+   }
+   
+   .weekdays,
+   .calendar-days {
+       gap: 3px;
+   }
+   
+   .calendar-day {
+       border-width: 1px;
+       border-radius: 8px;
+   }
+   
+   .calendar-header h2 {
+       font-size: 16px;
+   }
 }
