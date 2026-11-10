@@ -172,14 +172,21 @@ function saveHolidays() {
 // SMART INITIALIZE (Generates current year + 20 years)
 // ========================================
 
-function initializeDefaultHolidays() {
+function initializeDefaultHolidays(force = false) {
+    const saved = JSON.parse(localStorage.getItem('holidays') || '[]');
+
+    // Already set up: just load saved data (keeps custom holidays)
+    if (!force && localStorage.getItem('defaultHolidaysInitialized') === 'true') {
+        holidays = saved;
+        return;
+    }
+
+    const customHolidays = saved.filter(h => h.source === 'custom');
     const currentYear = new Date().getFullYear();
     const allHolidays = [];
-    
-    // Generate holidays for current year - 1 to current year + 20
+
     for (let year = currentYear - 1; year <= currentYear + 20; year++) {
-        const yearHolidays = generateHolidaysForYear(year);
-        yearHolidays.forEach(holiday => {
+        generateHolidaysForYear(year).forEach(holiday => {
             allHolidays.push({
                 id: 'default-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
                 date: holiday.date,
@@ -189,12 +196,11 @@ function initializeDefaultHolidays() {
             });
         });
     }
-    
-    // FORCE OVERWRITE localStorage
-    localStorage.setItem('holidays', JSON.stringify(allHolidays));
+
+    holidays = [...allHolidays, ...customHolidays];
+    localStorage.setItem('holidays', JSON.stringify(holidays));
     localStorage.setItem('defaultHolidaysInitialized', 'true');
-    holidays = allHolidays;
-    console.log(`✅ SMART GENERATED ${allHolidays.length} holidays!`);
+    console.log(`✅ Generated ${allHolidays.length} govt holidays, kept ${customHolidays.length} custom`);
 }
 
 // ========================================
