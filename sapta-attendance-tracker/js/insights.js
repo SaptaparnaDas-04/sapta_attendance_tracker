@@ -123,3 +123,77 @@ function renderRiskBadge(subjectId) {
     body.dark-mode .risk-none{color:#d1d5db}`;
     document.head.appendChild(css);
 })();
+
+// ========================================
+// DAILY "TODAY'S CLASSES" NOTIFICATION
+// ========================================
+
+Insights.todaysClasses = function (d = new Date()) {
+    const dow = d.getDay(), key = this.dateKey(d);
+    if (dow === 0) return { off: "Sunday" };
+
+    const holiday = this.holidays().filter(h => h.date === key).map(h => h.name);
+    if (holiday.length) return { off: holiday.join(" + ") };
+
+    const subjects = this.subjects(), times = this.read("classTimes", {});
+    const list = (this.schedule()[dow] || [])
+        .map(id => {
+            const s = subjects.find(x => x.id === id);
+            return s ? { name: s.name, start: (times[id] && times[id].start) || "" } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => (a.start || "99:99").localeCompare(b.start || "99:99"));
+    return { classes: list };
+};
+
+function showClassNotification(title, body) {
+    const opts = { body: body, icon: "icon-192.png", badge: "icon-192.png", tag: "daily-classes" };
+    // Android Chrome needs the service worker to show notifications
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistration().then(reg => {
+            if (reg) reg.showNotification(title, opts);
+            else new Notification(title, opts);
+        }).catch(() => new Notification(title, opts));
+    } else {
+        new Notification(title, opts);
+    }
+}
+
+function notifyTodayClasses(force = false) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+    const today = Insights.dateKey(new Date());
+    if (!force && localStorage.getItem("lastClassNotify") === today) return;
+
+    const info = Insights.todaysClasses();
+
+    if (info.off) {
+        if (info.off !== "Sunday") showClassNotification("🎉 No classes today", info.off);
+    } else if (info.classes.length) {
+        const body = info.classes
+            .map(c => (c.start ? c.start + "  " : "") + c.name)
+            .join("\n");
+        showClassNotification(`📚 Today's classes (${info.classes.length})`, body);
+    } else {
+        return; // nothing scheduled, stay quiet
+    }
+    localStorage.setItem("lastClassNotify", today);
+}
+
+function scheduleMidnightNotify() {
+    const now = new Date();
+    const next = new Date(now);
+    next.setHours(24, 0, 5, 0); // 12:00:05 am
+    setTimeout(function () {
+        notifyTodayClasses();
+        scheduleMidnightNotify();
+    }, next - now);
+}
+
+function startClassNotifications() {
+    notifyTodayClasses();          // first open on a new day
+    scheduleMidnightNotify();      // app left open past 12 am
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) notifyTodayClasses();   // coming back to the app
+    });
+}
