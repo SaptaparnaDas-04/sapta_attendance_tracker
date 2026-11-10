@@ -223,6 +223,11 @@
             }
         }
 
+        #todayHolidayName {
+            white-space: pre-line;
+            font-weight: 600;
+        }
+
         /* Sunday Card Style (RED) */
         .schedule-item.sunday {
             background: #fee2e2;
@@ -491,14 +496,20 @@
             }
         }
         
-        // 3. Update Holiday (including Sunday check)
+        // 3. Update Holiday (shows ALL holidays today: govt + custom, plus Sunday check)
         const holidays = getHolidays();
-        const todayHoliday = holidays.find(h => h.date === todayString);
+        const todaysHolidays = holidays.filter(h => h.date === todayString);
         const holidayEl = document.getElementById('todayHolidayName');
         const holidayCard = document.getElementById('todayHoliday');
         if (holidayEl && holidayCard) {
-            if (todayHoliday) {
-                holidayEl.textContent = todayHoliday.name;
+            if (todaysHolidays.length > 0) {
+                // One line per holiday, with 🏛️ for govt and ✏️ for custom
+                holidayEl.textContent = todaysHolidays
+                    .map(h => `${h.source === 'govt' ? '🏛️' : '✏️'} ${h.name}`)
+                    .join('\n');
+                if (isSunday) {
+                    holidayEl.textContent += '\n🎉 Also Sunday';
+                }
                 holidayCard.classList.add('holiday');
                 holidayCard.classList.remove('sunday');
             } else if (isSunday) {
@@ -614,7 +625,7 @@
 <!-- Chatbot Floating Button -->
 <button onclick="openChatbot()" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: #4a6cf7; color: white; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 20px rgba(74, 108, 247, 0.4); z-index: 9998;">🤖</button>
 
-<<!-- ========================================
+<!-- ========================================
      THEME PICKER + EXPORT (Floating Settings)
 ======================================== -->
 
