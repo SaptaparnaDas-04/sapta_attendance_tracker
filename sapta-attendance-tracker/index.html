@@ -315,6 +315,10 @@
         <h2>📅 Today's Schedule</h2>
         <div class="today-date" id="todayDate">Loading...</div>
         <div class="schedule-items">
+            <div class="schedule-item" id="todayStreak">
+                <h4>🔥 Attendance Streak</h4>
+                <p id="todayStreakText">Loading...</p>
+            </div>
             <div class="schedule-item" id="todaySubjects">
                 <h4>✅ Today's Subjects</h4>
                 <p id="todaySubjectsCount">Loading...</p>
@@ -457,6 +461,32 @@
             if (toggle) toggle.textContent = '🌙';
         }
     }
+    function calculateStreak() {
+        const records = getAttendanceRecords();
+        const holidayDates = new Set(getHolidays().map(h => h.date));
+    
+        const byDate = {};
+        records.forEach(r => {
+            (byDate[r.date] = byDate[r.date] || []).push(r.status);
+        });
+    
+        const pad = n => String(n).padStart(2, '0');
+        let streak = 0;
+        const d = new Date();
+    
+        for (let i = 0; i < 366; i++) {
+            const key = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+            const skipDay = d.getDay() === 0 || holidayDates.has(key);
+    
+            if (!skipDay) {
+                const statuses = byDate[key] || [];
+                if (statuses.includes('absent')) break;
+                if (statuses.includes('present')) streak++;
+            }
+            d.setDate(d.getDate() - 1);
+        }
+        return streak;
+    }
     
     // ========================================
     // TODAY'S SCHEDULE
@@ -574,6 +604,21 @@
                 targetCard.classList.remove('sunday', 'success');
                 targetCard.classList.add('warning');
             }
+        }
+
+        // 6. Streak
+        const streak = calculateStreak();
+        const streakEl = document.getElementById('todayStreakText');
+        const streakCard = document.getElementById('todayStreak');
+        if (streakEl && streakCard) {
+            if (streak === 0) {
+                streakEl.textContent = "Start your streak today! 💪";
+            } else if (streak < 5) {
+                streakEl.textContent = `🔥 ${streak} day${streak > 1 ? 's' : ''} in a row. Keep going!`;
+            } else {
+                streakEl.textContent = `🔥🔥 ${streak} days in a row! You're on fire!`;
+            }
+            streakCard.classList.toggle('success', streak > 0);
         }
     }
 
