@@ -430,6 +430,9 @@
         // Update Today's Schedule
         updateTodaySchedule();
         
+        // Update Class's Notifications
+        startClassNotifications();
+        
         // Check if app is installed
         if (typeof checkAppInstalled === "function") checkAppInstalled();
     });
