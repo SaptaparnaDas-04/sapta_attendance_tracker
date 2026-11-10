@@ -15,7 +15,7 @@ function resultHtml(id, attend, skip) {
     const t = Insights.target();
     const cur = Insights.stats(id).pct;
     const proj = Insights.project(id, attend, skip);
-    const curTxt = cur === null ? "–" : cur.toFixed(1) + "%";
+    const curTxt = cur === null ? "new" : cur.toFixed(1) + "%";
     const projTxt = proj === null ? "–" : proj.toFixed(1) + "%";
     return `<span class="pl-pct">${curTxt} → <b>${projTxt}</b></span> ${Insights.badge(proj, t)}`;
 }
