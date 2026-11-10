@@ -210,7 +210,7 @@ function ensureHolidaysForYear(year) {
         for (let y = year; y <= year + 10; y++) {
             const yearHolidays = generateHolidaysForYear(y);
             yearHolidays.forEach(holiday => {
-                const exists = currentHolidays.some(h => h.date === holiday.date);
+                const exists = currentHolidays.some(h => h.date === holiday.date && h.name === holiday.name);
                 if (!exists) {
                     currentHolidays.push({
                         id: 'default-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
@@ -339,9 +339,11 @@ function addHoliday() {
         return;
     }
 
-    const existing = holidays.find(holiday => holiday.date === date);
-    if (existing) {
-        alert(`⚠️ A holiday already exists on this date: "${existing.name}"`);
+    const duplicate = holidays.find(
+        h => h.date === date && h.name.trim().toLowerCase() === name.toLowerCase()
+    );
+    if (duplicate) {
+        alert(`⚠️ "${duplicate.name}" is already added on this date.`);
         return;
     }
 
