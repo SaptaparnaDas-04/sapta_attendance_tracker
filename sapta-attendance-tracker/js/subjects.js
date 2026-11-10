@@ -43,6 +43,7 @@ function displaySubjects() {
                 <p>📋 Type: ${subjectType}</p>
                 ${subjectCode ? `<p>🔢 Code: ${subjectCode}</p>` : ''}
                 <p style="font-size: 12px; color: #666;">📅 Days: ${schedule}</p>
+                ${typeof renderRiskBadge === 'function' ? renderRiskBadge(subject.id) : ''}
                 <div class="card-buttons">
                     <button class="edit-btn" onclick="editSubject('${subject.id}')">
                         ✏️ Edit
