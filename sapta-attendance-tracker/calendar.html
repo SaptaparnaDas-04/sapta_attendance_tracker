@@ -26,6 +26,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
         /* Calendar specific styles */
         .calendar-wrapper {
             max-width: 1100px;
@@ -97,7 +101,7 @@
         
         .weekdays {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 6px;
             margin-top: 20px;
             text-align: center;
@@ -110,12 +114,14 @@
         
         .calendar-days {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 6px;
             margin-top: 8px;
         }
         
         .calendar-day {
+            min-width: 0;
+            overflow: hidden;
             min-height: 85px;
             padding: 8px 6px;
             border: 2px solid transparent;
@@ -198,7 +204,7 @@
             border-radius: 4px;
             text-align: center;
             width: 100%;
-            max-width: 90px;
+            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -431,27 +437,61 @@
         }
         
         @media (max-width: 768px) {
+            .calendar-wrapper {
+                padding: 10px;
+            }
+        
             .calendar-day {
                 min-height: 65px;
                 padding: 6px 4px;
             }
-            
+        
             .calendar-day .day-number {
                 font-size: 15px;
             }
-            
+        
             .calendar-day .holiday-label,
             .calendar-day .sunday-label {
                 font-size: 8px;
-                max-width: 55px;
+                max-width: 100%;
+                padding: 1px 3px;
             }
-            
+        
             .calendar-header h2 {
                 font-size: 18px;
             }
-            
+        
             .calendar-container {
-                padding: 16px;
+                padding: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calendar-days,
+            .weekdays {
+                gap: 3px;
+            }
+        
+            .calendar-day {
+                min-height: 56px;
+                padding: 4px 2px;
+                border-width: 1px;
+            }
+        
+            .calendar-day .day-number {
+                font-size: 13px;
+            }
+        
+            .calendar-day .holiday-label,
+            .calendar-day .sunday-label {
+                font-size: 7px;
+                padding: 1px 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-day .holiday-label {
+                display: none;
             }
         }
     </style>
@@ -632,7 +672,7 @@
 <!-- Chatbot Floating Button -->
 <button onclick="openChatbot()" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: #4a6cf7; color: white; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 20px rgba(74, 108, 247, 0.4); z-index: 9998;">🤖</button>
 
-<<!-- ========================================
+<!-- ========================================
      THEME PICKER + EXPORT (Floating Settings)
 ======================================== -->
 
