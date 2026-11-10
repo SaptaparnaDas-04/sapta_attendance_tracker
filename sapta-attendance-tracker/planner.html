@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#4a6cf7">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Planner - Attendance Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        html, body { max-width: 100%; overflow-x: hidden; }
+        .pl-wrap { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .pl-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; margin-bottom: 22px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .pl-card h2 { font-size: 20px; margin-bottom: 4px; }
+        .pl-hint { color: #6b7280; font-size: 14px; margin-bottom: 14px; }
+        .pl-pill { display: inline-block; background: #e8edf5; color: #4a6cf7; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 14px; margin-top: 6px; }
+        .pl-dates { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px; }
+        .pl-dates label { display: flex; flex-direction: column; font-size: 13px; font-weight: 600; gap: 4px; flex: 1; min-width: 130px; }
+        .pl-dates input { padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; }
+        .pl-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .pl-chips span { background: #f3f4f6; border-radius: 12px; padding: 4px 12px; font-size: 13px; font-weight: 600; }
+        .pl-holidays { margin: 0 0 12px 18px; font-size: 13px; color: #92400e; }
+        .pl-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+        .pl-row { border-top: 1px solid #e5e7eb; padding: 14px 0; }
+        .pl-name { font-weight: 700; margin-bottom: 6px; }
+        .pl-name small { font-weight: 400; color: #6b7280; margin-left: 6px; }
+        .pl-row input[type=range] { width: 100%; accent-color: #4a6cf7; }
+        .pl-lbl { display: block; font-size: 13px; margin-bottom: 4px; }
+        .pl-sub { font-size: 13px; color: #6b7280; margin: 2px 0 6px; }
+        .pl-res { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .pl-pct { font-size: 15px; }
+        .pl-note { color: #6b7280; font-size: 14px; }
+        body.dark-mode .pl-card { background: #1e1e2e; border-color: #2d2d3f; }
+        body.dark-mode .pl-chips span { background: #2d2d3f; }
+        body.dark-mode .pl-row { border-color: #2d2d3f; }
+        body.dark-mode .pl-pill { background: #2d2d3f; color: #818cf8; }
+        body.dark-mode .pl-holidays { color: #fcd34d; }
+        body.dark-mode .pl-hint, body.dark-mode .pl-note, body.dark-mode .pl-sub, body.dark-mode .pl-name small { color: #a0a0a0; }
+        @media (max-width: 480px) { .pl-wrap { padding: 10px; } .pl-card { padding: 16px; } }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-left"><div class="logo">📚 <span>Attendance</span> Tracker</div></div>
+    <div class="navbar-right">
+        <div class="nav-links">
+            <a href="index.html">🏠 Home</a>
+            <a href="subjects.html">📚 Subjects</a>
+            <a href="calendar.html">📅 Calendar</a>
+            <a href="attendance.html">📝 Attendance</a>
+            <a href="report.html">📊 Reports</a>
+            <a href="holidays.html">🎉 Holidays</a>
+            <a href="planner.html" class="active">🏖️ Planner</a>
+        </div>
+        <div class="user-badge">
+            <button onclick="toggleDarkMode()" id="darkModeToggle" title="Toggle Dark Mode">🌙</button>
+            <div class="avatar" id="userAvatar">S</div>
+            <span class="user-name" id="userName">User</span>
+            <button class="logout-btn" onclick="logoutUser()" title="Logout">🚪</button>
+        </div>
+    </div>
+</nav>
+
+<main class="pl-wrap">
+    <div class="page-header">
+        <h1>🏖️ Attendance Planner</h1>
+        <p>See what a break does to your percentage before you take it.</p>
+        <span class="pl-pill" id="targetPill"></span>
+    </div>
+
+    <section class="pl-card">
+        <h2>Bunk planner</h2>
+        <p class="pl-hint">Sundays and your holidays are skipped automatically. Classes you've already marked aren't counted again.</p>
+        <div class="pl-dates">
+            <label>From <input type="date" id="planStart"></label>
+            <label>To <input type="date" id="planEnd"></label>
+            <button class="primary-btn" onclick="calculatePlan()">Calculate</button>
+        </div>
+        <div id="planResult"></div>
+    </section>
+
+    <section class="pl-card">
+        <h2>What-if simulator</h2>
+        <p class="pl-hint">Slide to try different plans. Nothing is saved.</p>
+        <div id="whatIfList"></div>
+    </section>
+</main>
+
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/insights.js"></script>
+<script src="js/planner.js"></script>
+<script>
+    window.toggleDarkMode = window.toggleDarkMode || function () {
+        const on = document.body.classList.toggle("dark-mode");
+        localStorage.setItem("darkMode", on ? "enabled" : "disabled");
+        document.getElementById("darkModeToggle").textContent = on ? "☀️" : "🌙";
+    };
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof checkAuth === "function") checkAuth();
+        const avatar = document.getElementById("userAvatar");
+        const name = document.getElementById("userName");
+        if (avatar && typeof getUserInitials === "function") avatar.textContent = getUserInitials();
+        if (name && typeof getUserDisplayName === "function") name.textContent = getUserDisplayName();
+        if (typeof loadDarkModePreference === "function") loadDarkModePreference();
+        else if (localStorage.getItem("darkMode") === "enabled") document.body.classList.add("dark-mode");
+    });
+</script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
