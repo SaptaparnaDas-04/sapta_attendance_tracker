@@ -16,7 +16,7 @@ A lightweight, cloud-synced web app for tracking class attendance. Students set 
 </p>
 
 **Live application:** <https://saptaattendancetracker.vercel.app/>  
-**Demo video:** <DEMO_VIDEO_LINK_HERE>
+**Demo video:** https://drive.google.com/file/d/14hmNhFu6fX0dbP1fYa7jXKglhvn2g_rF/view?usp=drive_link
 
 <!--
 Add screenshots to docs/screenshots/ and uncomment:
