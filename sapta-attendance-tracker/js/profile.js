@@ -1,7 +1,7 @@
 // ========================================
 // PROFILE PHOTO with crop screen
 // Tap the navbar avatar -> choose photo -> drag + zoom -> Save.
-// Saved to your Supabase account (user_data.data.profilePic) and cached in localStorage.
+// Saved to your Supabase account (user_data.profile_pic) and cached in localStorage.
 // ========================================
 
 (function () {
@@ -28,7 +28,7 @@
         }
     }
 
-    // ---------- Supabase sync (photo lives in user_data.data.profilePic) ----------
+    // ---------- Supabase sync (photo lives in user_data.profile_pic) ----------
     async function getUid() {
         if (typeof supabaseClient === "undefined") return null;
         const res = await supabaseClient.auth.getSession();
@@ -40,10 +40,9 @@
         try {
             const uid = await getUid();
             if (!uid) return false;
-            const cur = await supabaseClient.from("user_data").select("data").eq("user_id", uid).maybeSingle();
-            const merged = Object.assign({}, cur.data && cur.data.data, { profilePic: pic });
+            // Own column, so the app's normal data save can never overwrite it
             const up = await supabaseClient.from("user_data").upsert(
-                { user_id: uid, data: merged, updated_at: new Date().toISOString() },
+                { user_id: uid, profile_pic: pic },
                 { onConflict: "user_id" }
             );
             return !up.error;
@@ -73,9 +72,9 @@
                 return;
             }
 
-            const res = await supabaseClient.from("user_data").select("data").eq("user_id", uid).maybeSingle();
+            const res = await supabaseClient.from("user_data").select("profile_pic").eq("user_id", uid).maybeSingle();
             if (res.error) return;
-            const server = res.data && res.data.data && res.data.data.profilePic;
+            const server = res.data && res.data.profile_pic;
 
             if (server) {
                 if (server !== local) { localStorage.setItem(KEY, server); applyPic(); }
