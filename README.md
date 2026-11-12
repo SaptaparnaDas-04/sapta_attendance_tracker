@@ -8,7 +8,15 @@
 
 A lightweight, cloud-synced web app for tracking class attendance. Students set up their subjects and weekly timetable, record each class as present, absent or cancelled, and see in real time how they stand against their attendance target, including how many classes they can still afford to miss.
 
-**Live application:** <https://saptaattendancetracker.vercel.app/>
+<p align="center">
+  <a href="https://saptaattendancetracker.vercel.app/"><b>🚀 Live App</b></a> &nbsp;·&nbsp;
+  <a href="DEMO_VIDEO_LINK_HERE"><b>🎬 Demo Video</b></a> &nbsp;·&nbsp;
+  <a href="#features"><b>✨ Features</b></a> &nbsp;·&nbsp;
+  <a href="#getting-started"><b>🛠️ Get Started</b></a>
+</p>
+
+**Live application:** <https://saptaattendancetracker.vercel.app/>  
+**Demo video:** <DEMO_VIDEO_LINK_HERE>
 
 <!--
 Add screenshots to docs/screenshots/ and uncomment:
