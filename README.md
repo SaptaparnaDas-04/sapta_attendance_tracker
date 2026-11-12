@@ -3,7 +3,7 @@
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://saptaattendancetracker.vercel.app/)
 [![Hosted on Vercel](https://img.shields.io/badge/hosted%20on-Vercel-black)](https://vercel.com/)
 [![Backend: Supabase](https://img.shields.io/badge/backend-Supabase-3ecf8e)](https://supabase.com/)
-[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8)](#progressive-web-app)
+[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8)](#features)
 [![Build](https://img.shields.io/badge/build-none%20required-blue)](#getting-started)
 
 A lightweight, cloud-synced web app for tracking class attendance. Students set up their subjects and weekly timetable, record each class as present, absent or cancelled, and see in real time how they stand against their attendance target, including how many classes they can still afford to miss.
@@ -14,9 +14,6 @@ A lightweight, cloud-synced web app for tracking class attendance. Students set 
   <a href="#features"><b>✨ Features</b></a> &nbsp;·&nbsp;
   <a href="#getting-started"><b>🛠️ Get Started</b></a>
 </p>
-
-**Live application:** <https://saptaattendancetracker.vercel.app/>  
-**Demo video:** https://drive.google.com/file/d/14hmNhFu6fX0dbP1fYa7jXKglhvn2g_rF/view?usp=drive_link
 
 <!--
 Add screenshots to docs/screenshots/ and uncomment:
