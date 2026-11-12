@@ -9,18 +9,24 @@
     const VIEW = 280;     // crop box size on screen (px)
     const OUT = 256;      // saved image size (px)
 
-    function applyPic() {
-        const av = document.getElementById("userAvatar");
-        if (!av) return;
-        const pic = localStorage.getItem(KEY);
-        if (pic) {
-            av.style.backgroundImage = 'url("' + pic + '")';
-            av.classList.add("has-pic");
-        } else {
-            av.style.backgroundImage = "";
-            av.classList.remove("has-pic");
-        }
+function applyPic() {
+    const av = document.getElementById("userAvatar");
+    if (!av) return;
+    const pic = localStorage.getItem(KEY);
+    if (pic) {
+        av.style.backgroundImage = 'url("' + pic + '")';
+        av.style.backgroundSize = "cover";
+        av.style.backgroundPosition = "center";
+        av.style.backgroundRepeat = "no-repeat";
+        av.style.fontSize = "0";
+        av.style.color = "transparent";
+        av.classList.add("has-pic");
+    } else {
+        ["backgroundImage", "backgroundSize", "backgroundPosition",
+         "backgroundRepeat", "fontSize", "color"].forEach(p => av.style[p] = "");
+        av.classList.remove("has-pic");
     }
+}
 
     // ---------- Crop screen ----------
     function openCropper(img) {
