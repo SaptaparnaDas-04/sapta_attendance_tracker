@@ -7,10 +7,12 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="css/style.css">
     <title>Planner - Attendance Tracker</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/profile.js"></script>
+    <script src="js/theme.js"></script>
     <style>
         html, body { max-width: 100%; overflow-x: hidden; }
         .pl-wrap { max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -48,6 +50,9 @@
         }
         .pl-dates { align-items: stretch; }
         .pl-dates .primary-btn { align-self: flex-end; height: 44px; padding: 0 28px; }
+        .pl-pill { background: var(--primary-light, #e8edf5); color: var(--primary, #4a6cf7); }
+        .pl-row input[type=range] { accent-color: var(--primary, #4a6cf7); }
+        .pl-card h2 { color: inherit; }
     </style>
 </head>
 <body>
