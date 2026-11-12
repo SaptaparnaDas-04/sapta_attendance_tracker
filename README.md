@@ -1,561 +1,371 @@
-# 📊 Attendance Tracker
+# Attendance Tracker
 
-A lightweight, cloud-synced web application for managing and monitoring class attendance.
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://saptaattendancetracker.vercel.app/)
+[![Hosted on Vercel](https://img.shields.io/badge/hosted%20on-Vercel-black)](https://vercel.com/)
+[![Backend: Supabase](https://img.shields.io/badge/backend-Supabase-3ecf8e)](https://supabase.com/)
+[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8)](#progressive-web-app)
+[![Build](https://img.shields.io/badge/build-none%20required-blue)](#getting-started)
 
-Students can add their subjects, create a weekly timetable, mark classes as **Present, Absent, or Cancelled**, and monitor their attendance percentage in real time. The application also provides useful insights such as how many classes can still be missed while maintaining the required attendance target.
+A lightweight, cloud-synced web app for tracking class attendance. Students set up their subjects and weekly timetable, record each class as present, absent or cancelled, and see in real time how they stand against their attendance target, including how many classes they can still afford to miss.
 
-## 🚀 Live Application
+**Live application:** <https://saptaattendancetracker.vercel.app/>
 
-**Try the Attendance Tracker:**  
-https://saptaattendancetracker.vercel.app/
+<!--
+Add screenshots to docs/screenshots/ and uncomment:
 
----
-
-## 📌 Overview
-
-Most educational institutions require students to maintain a minimum attendance percentage. However, manually calculating attendance and keeping track of missed classes can be difficult.
-
-**Attendance Tracker** provides a centralized platform where students can:
-
-- Monitor overall attendance
-- Track attendance subject-wise
-- Maintain a weekly timetable
-- Mark daily attendance
-- View attendance history through a calendar
-- Calculate how many classes can still be missed
-- Determine how many consecutive classes are required to reach a target
-- Track weekly and monthly attendance trends
-- Manage holidays
-- Export attendance data
-- Synchronize data across devices using cloud storage
-
-The application is designed as a lightweight web application with a simple and responsive interface.
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" width="30%" alt="Dashboard">
+  <img src="docs/screenshots/calendar.png" width="30%" alt="Calendar">
+  <img src="docs/screenshots/planner.png" width="30%" alt="Planner">
+</p>
+-->
 
 ---
 
-## ✨ Features
+## Table of Contents
 
-### 📊 Dashboard
-
-- Overall attendance percentage
-- Total classes
-- Present and absent counts
-- Configurable attendance target
-- Attendance status and warnings
-- Today's scheduled classes
-- Remaining safe-to-skip classes
-
-### 📚 Subject Management
-
-- Add new subjects
-- Edit existing subjects
-- Delete subjects
-- Assign subjects to weekdays
-- Create a personalized weekly timetable
-
-### 🗓️ Calendar
-
-- Monthly attendance calendar
-- Colour-coded attendance status
-- Present days
-- Absent days
-- Partial attendance
-- Cancelled classes
-- Sundays and holidays
-- Select a date to record attendance
-
-### ✅ Attendance Marking
-
-Each scheduled class can be marked as:
-
-- **Present**
-- **Absent**
-- **Cancelled**
-- **Remove Marking**
-
-There is also an option to cancel all classes scheduled for a particular day.
-
-### 📈 Reports
-
-The Reports section provides:
-
-- Subject-wise attendance percentage
-- Attendance progress indicators
-- Weekly attendance trends
-- Monthly attendance trends
-- Attendance statistics
-
-### 🏖️ Holiday Management
-
-- Built-in holiday data
-- Official holidays for 2026–2030
-- Custom holidays
-- Automatic Sunday handling
-- Holiday-aware attendance calculations
-
-### 🤖 AI Assistant
-
-The application includes a browser-based attendance assistant that can answer questions about the user's attendance data.
-
-Examples:
-
-> How am I doing?
-
-> Can I skip a class?
-
-> Can I skip Maths tomorrow?
-
-> How many classes do I need to reach 85%?
-
-> Which subjects are at risk?
-
-> What classes do I have tomorrow?
-
-> Am I improving?
-
-The assistant can also understand informal terms such as **"bunk"** and recognize subject names, abbreviations, and relative dates.
-
-### 🎨 Themes
-
-The application supports multiple interface themes:
-
-- Blue
-- Green
-- Purple
-- Dark Mode
-
-### 📤 Data Export
-
-Users can export their attendance information as:
-
-- CSV
-- JSON backup
-
-### 🔔 Notifications
-
-Optional browser notifications can remind users to record attendance.
-
-### ☁️ Cloud Synchronization
-
-Attendance information can be synchronized with the user's account so that the data can be accessed across devices.
-
-### 📱 Progressive Web App
-
-The application can be installed as a Progressive Web App on supported mobile and desktop browsers.
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Attendance Calculation](#attendance-calculation)
+4. [Attendance Planner](#attendance-planner)
+5. [AI Assistant](#ai-assistant)
+6. [Technology Stack](#technology-stack)
+7. [Architecture](#architecture)
+8. [Project Structure](#project-structure)
+9. [Getting Started](#getting-started)
+10. [Deployment](#deployment)
+11. [Usage Guide](#usage-guide)
+12. [Security](#security)
+13. [Known Limitations](#known-limitations)
+14. [Roadmap](#roadmap)
+15. [Contributing](#contributing)
+16. [License](#license)
 
 ---
 
-## 🧮 Attendance Calculation
+## Overview
 
-Attendance percentage is calculated using:
+Most institutions require a minimum attendance percentage, yet students rarely have an accurate, up-to-date picture of where they stand. Attendance Tracker provides:
 
-```text
-Attendance % = Present / (Present + Absent) × 100
-```
+- A per-subject and overall view of attendance against a configurable target.
+- Forward-looking guidance: classes that can safely be skipped, or must be attended, to stay at target.
+- A planner that shows the effect of a break or holiday before it is taken.
+- A local-first experience that feels instant, with automatic cloud sync across devices.
 
-Cancelled classes are **not included** in the attendance calculation because the class did not take place.
+The app is a static site with no build step. Authentication and storage are handled by Supabase.
 
-### Attendance Status
+---
 
-| Status | Included in Calculation |
+## Features
+
+| Area | Description |
 |---|---|
-| Present | ✅ Yes |
-| Absent | ✅ Yes |
-| Cancelled | ❌ No |
+| **Dashboard** | Overall percentage, present / absent / total counts, editable target (default 75%), today's schedule, today's holidays and an attendance streak. |
+| **Subjects** | Create, edit and delete subjects; assign each to weekdays to build a weekly timetable. Each subject card shows a risk badge with advice. |
+| **Calendar** | Monthly view with colour-coded present, absent, partial and cancelled days, plus holidays and Sundays. Selecting a date opens its attendance page. |
+| **Attendance marking** | Per-subject **Present**, **Absent**, **Cancelled** and **Remove Marking**, plus a **Cancel all classes** shortcut for a day. |
+| **Reports** | Per-subject percentages with progress indicators, and weekly and monthly trend charts. |
+| **Holidays** | Bundled official holidays for 2026 to 2030, custom holidays, several holidays on the same date, and automatic Sunday handling. |
+| **Planner** | Holiday-aware bunk planner and a what-if simulator. See [Attendance Planner](#attendance-planner). |
+| **AI Assistant** | In-browser assistant that answers questions about your own attendance. See [AI Assistant](#ai-assistant). |
+| **Profile photo** | Upload and crop a photo; it is stored with your account and shown on every device. |
+| **Themes** | Blue, green, purple and dark themes, chosen in Settings and remembered across every page. |
+| **Data export** | Download your data as CSV or a full JSON backup. |
+| **Notifications** | Optional browser reminders. |
+| **Cloud sync** | One account, available on every device. |
+| **Progressive Web App** | Installable on mobile and desktop. |
 
-### Classes That Can Still Be Missed
+### Risk badges
 
-If:
+Each subject is rated against your target `T`:
 
-- `P` = Present classes
-- `N` = Total counted classes
-- `T` = Target attendance percentage
+| Badge | Condition |
+|---|---|
+| 🟢 Safe | percentage ≥ `T` + 5 |
+| 🟡 Careful | `T` ≤ percentage < `T` + 5 |
+| 🔴 Danger | percentage < `T` |
+| ⚪ No data | no counted classes yet |
 
-Then:
-
-```text
-Maximum skippable classes =
-floor((P × 100) / T − N)
-```
-
-### Classes Required to Reach Target
-
-If the current attendance is below the target:
-
-```text
-Required classes =
-ceil((T × N − 100 × P) / (100 − T))
-```
-
-These calculations allow the application to provide forward-looking attendance guidance.
+Each card also explains what to do, for example *"You can skip 3 more classes"* or *"Attend the next 4 classes in a row to reach 75%"*.
 
 ---
 
-## 🏗️ Architecture
+## Attendance Calculation
+
+Every class is recorded with one of three statuses:
+
+| Status | Counted in percentage |
+|---|---|
+| `present` | Yes (numerator and denominator) |
+| `absent` | Yes (denominator only) |
+| `cancelled` | No |
 
 ```text
-                  ┌─────────────────────┐
-                  │       Browser       │
-                  │                     │
-                  │  HTML / CSS / JS    │
-                  └──────────┬──────────┘
-                             │
-                ┌────────────┴────────────┐
-                │                         │
-                ▼                         ▼
-        ┌───────────────┐        ┌────────────────┐
-        │  localStorage │        │  Supabase Auth │
-        │               │        │                │
-        │ Local Data    │        │ Authentication │
-        └───────┬───────┘        └───────┬────────┘
-                │                        │
-                └────────────┬───────────┘
-                             ▼
-                    ┌─────────────────┐
-                    │     Supabase    │
-                    │                 │
-                    │   PostgreSQL    │
-                    │   + RLS         │
-                    └─────────────────┘
+Attendance % = Present / (Present + Absent) x 100
 ```
 
-### Data Synchronization
+Cancelled classes are stored so the calendar and history stay accurate, but they are excluded from every calculation because the class did not take place.
 
-The following data can be synchronized:
+**Classes that can still be missed** while staying at or above target `T`, with `P` present and `N` counted classes:
 
 ```text
-subjects
-attendanceRecords
-holidays
-attendanceTarget
-weeklySchedule
+max_skippable = floor( (P x 100) / T - N )
 ```
 
-### Attendance Record Format
+**Consecutive classes required** to reach target `T` when currently below it:
 
-```json
-{
-  "date": "2026-10-05",
-  "subjectId": "1791225003729",
-  "status": "present"
-}
+```text
+required = ceil( (T x N - 100 x P) / (100 - T) )
 ```
 
 ---
 
-## 🛠️ Technology Stack
+## Attendance Planner
+
+The planner (`planner.html`) answers the question *"what happens to my attendance if I take this break?"*
+
+**Bunk planner**
+
+1. Pick a start and end date.
+2. Sundays and your holidays (official and custom) are skipped automatically, and classes you have already marked are not counted twice.
+3. For each subject, a slider sets how many of the remaining classes you would skip.
+4. The page shows your current percentage, the projected percentage and a risk badge. *Skip all* and *Attend all* buttons set every slider at once.
+
+**What-if simulator**
+
+Two sliders per subject (*attend X more*, *skip Y more*) with the result updating live. Nothing is saved.
+
+The planner assumes every scheduled class takes place, and only lists subjects that have days assigned on the Subjects page.
+
+---
+
+## AI Assistant
+
+The assistant is available from the chat button on every page. It runs entirely in the browser: no external API, no API key, and no attendance data leaves your device for processing.
+
+**Capabilities**
+
+- Tolerates spelling mistakes and informal phrasing ("bunk" is understood as "skip").
+- Recognises subject names, abbreviations and initials.
+- Resolves relative dates such as *today*, *tomorrow* and weekday names.
+- Remembers context, so follow-ups like "what about physics?" work.
+
+**Example queries**
+
+| Query | Result |
+|---|---|
+| How am I doing? | Overall status, safe-to-skip count, subjects below target |
+| Can I skip maths tomorrow? | Projected effect of missing that day's classes |
+| How many classes do I need to reach 85%? | Consecutive classes required |
+| Which subjects are at risk? | Subjects below target or with no margin |
+| What classes do I have tomorrow? | Scheduled subjects and their status |
+| Am I improving? | Last 7 days compared with the 7 before |
+| Set my target to 80% | Updates the attendance target |
+
+---
+
+## Technology Stack
 
 | Layer | Technology |
 |---|---|
-| Frontend | HTML5, CSS3, JavaScript |
-| Database | Supabase PostgreSQL |
-| Authentication | Supabase Auth |
-| Security | PostgreSQL Row Level Security |
-| Charts | Chart.js |
-| Hosting | Vercel |
-| Offline Support | Service Worker |
-| Installation | Progressive Web App |
-| Storage | Browser localStorage + Supabase |
+| Frontend | HTML5, CSS3, vanilla JavaScript (no framework, no bundler) |
+| Authentication and database | [Supabase](https://supabase.com/) Auth and PostgreSQL with Row Level Security |
+| Charts | [Chart.js](https://www.chartjs.org/) |
+| Hosting | [Vercel](https://vercel.com/) (static) |
+| Offline and install | Service Worker and Web App Manifest |
 
 ---
 
-## 📂 Project Structure
+## Architecture
 
-```text
-my_attendence_record/
-│
-├── index.html
-├── subjects.html
-├── calendar.html
-├── attendance.html
-├── report.html
-├── holidays.html
-├── login.html
-├── signup.html
-├── manifest.json
-├── SUPABASE_SETUP.sql
-│
-├── icon-192.png
-├── icon-512.png
-│
-├── css/
-│   └── style.css
-│
-└── js/
-    ├── app.js
-    ├── attendance.js
-    ├── subjects.js
-    ├── calendar.js
-    ├── holidays.js
-    ├── report.js
-    ├── ai_assistant.js
-    ├── auth.js
-    ├── login.js
-    ├── supabase.js
-    └── service_worker.js
+```mermaid
+flowchart TD
+    UI["Browser UI<br/>HTML, CSS, JavaScript"] --> LS["localStorage<br/>instant reads and writes"]
+    UI --> SYNC["auth.js sync layer<br/>debounced"]
+    SYNC --> AUTH["Supabase Auth<br/>username + password"]
+    SYNC --> DB[("Supabase PostgreSQL<br/>user_data table + RLS")]
+```
+
+- **Local first.** All reads and writes hit `localStorage`, so the UI is instant.
+- **Sync.** Changes to a synced key are debounced and upserted to Supabase; the latest data is pulled when you return to the app.
+- **Synced keys:** `subjects`, `attendanceRecords`, `holidays`, `attendanceTarget`, `weeklySchedule`. The profile photo is stored in its own `profile_pic` column so normal data saves cannot overwrite it.
+- **Authentication.** Users sign in with a username and password; internally the username maps to `<username>@attendance.com` for Supabase Auth.
+
+**Attendance record format**
+
+```json
+{ "date": "2026-10-05", "subjectId": "1791225003729", "status": "present" }
 ```
 
 ---
 
-## 🚀 Getting Started
+## Project Structure
+
+The application lives in the `sapta-attendance-tracker/` folder of this repository.
+
+```text
+sapta_attendance_tracker/
+|-- README.md
+'-- sapta-attendance-tracker/
+    |-- index.html              Dashboard
+    |-- subjects.html           Subjects and weekly timetable
+    |-- calendar.html           Monthly calendar
+    |-- attendance.html         Mark attendance for a date
+    |-- report.html             Reports and charts
+    |-- holidays.html           Official and custom holidays
+    |-- planner.html            Bunk planner and what-if simulator
+    |-- login.html              Sign in
+    |-- signup.html             Account creation
+    |-- manifest.json           PWA manifest
+    |-- SUPABASE_SETUP.sql      Database schema and security policies
+    |-- icon-192.png
+    |-- icon-512.png
+    |-- css/
+    |   '-- style.css           Styles, themes and dark mode
+    '-- js/
+        |-- app.js              Dashboard logic, target, shared data accessors
+        |-- attendance.js       Marking, statistics, cancel-all
+        |-- subjects.js         Subjects and weekly schedule
+        |-- calendar.js         Calendar rendering
+        |-- holidays.js         Holiday data (2026-2030) and management
+        |-- report.js           Reports
+        |-- insights.js         Risk badges and planner calculations
+        |-- planner.js          Planner and what-if simulator
+        |-- profile.js          Profile photo: crop and cloud sync
+        |-- theme.js            Remembers dark/light mode and colour theme
+        |-- ai_assistant.js     Assistant, theme switcher, export, notifications
+        |-- auth.js             Authentication and cloud synchronisation
+        |-- login.js            Sign-in form handling
+        |-- supabase.js         Supabase client configuration
+        '-- service_worker.js   Offline caching
+```
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-Before running the project locally, make sure you have:
+- A free [Supabase](https://supabase.com/) project
+- Any static file server (Python, Node.js or the VS Code Live Server extension)
 
-- A Supabase account
-- A Supabase project
-- A modern web browser
-- VS Code or another code editor
-- A local static server
-
-You can use:
-
-- VS Code Live Server
-- Python HTTP Server
-- Node.js static server
-
----
-
-### 1. Clone the Repository
+### 1. Get the source
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/SaptaparnaDas-04/sapta_attendance_tracker.git
+cd sapta_attendance_tracker/sapta-attendance-tracker
 ```
-
-Move into the project directory:
-
-```bash
-cd my_attendence_record
-```
-
----
 
 ### 2. Configure Supabase
 
-Create a new project in Supabase.
+1. Create a Supabase project.
+2. In **SQL Editor**, run [`SUPABASE_SETUP.sql`](./sapta-attendance-tracker/SUPABASE_SETUP.sql) once. It creates the `user_data` table and its Row Level Security policies.
+3. If you created the table before profile photos were added, also run:
 
-Open the Supabase **SQL Editor** and execute:
+   ```sql
+   alter table public.user_data add column if not exists profile_pic text;
+   ```
 
-```text
-SUPABASE_SETUP.sql
-```
+4. In **Authentication > Providers > Email**, turn **Confirm email** off. Usernames map to placeholder addresses that cannot receive mail.
+5. In **Project Settings > API**, copy the project URL and the **anon public** key into `js/supabase.js`:
 
-This creates the required database structure and Row Level Security policies.
+   ```js
+   const SUPABASE_URL = "https://<your-project>.supabase.co";
+   const SUPABASE_KEY = "<your-anon-public-key>";
+   ```
 
-Then open:
-
-```text
-js/supabase.js
-```
-
-Add your Supabase project credentials:
-
-```javascript
-const SUPABASE_URL = "https://<your-project>.supabase.co";
-const SUPABASE_KEY = "<your-anon-public-key>";
-```
-
-> ⚠️ Never expose your Supabase `service_role` key in frontend code.
-
----
-
-### 3. Run Locally
-
-#### Using Python
+### 3. Run locally
 
 ```bash
+# Python
 python -m http.server 5501
+
+# Node.js
+npx serve .
 ```
 
-Then open:
-
-```text
-http://localhost:5501
-```
-
-#### Using VS Code Live Server
-
-Open `index.html` with the **Live Server** extension.
+Open `http://localhost:5501/login.html`.
 
 ---
 
-## 🌐 Deployment
+## Deployment
 
-The application is a static web application and can be deployed using services such as:
+The app is a static site and deploys to Vercel without a build step.
 
-- Vercel
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
+1. Push the repository to GitHub.
+2. Import it in Vercel.
+3. Set **Root Directory** to `sapta-attendance-tracker`.
+4. Set **Framework Preset** to *Other*, and leave the build command and output directory empty.
+5. Deploy.
 
-### Vercel Deployment
-
-1. Push the project to GitHub.
-2. Open Vercel.
-3. Import the GitHub repository.
-4. Select the project.
-5. Keep the framework setting appropriate for a static site.
-6. Leave the build command empty if no build step is required.
-7. Deploy the project.
-
-### Current Deployment
-
-The current live deployment is hosted on Vercel:
-
-**https://saptaattendancetracker.vercel.app/**
+Any static host (Netlify, GitHub Pages, Cloudflare Pages) works too.
 
 ---
 
-## 📖 Usage Guide
+## Usage Guide
 
-### Step 1 — Create an Account
-
-Open the application and create an account using the sign-up page.
-
-### Step 2 — Add Subjects
-
-Add the subjects you study and select the weekdays on which each subject is scheduled.
-
-### Step 3 — Set Your Attendance Target
-
-Set your required attendance percentage, such as:
-
-```text
-75%
-80%
-85%
-```
-
-### Step 4 — Manage Holidays
-
-Review the predefined holidays and add custom holidays if required.
-
-### Step 5 — Mark Attendance
-
-From the calendar, select a date and mark each scheduled class as:
-
-```text
-Present
-Absent
-Cancelled
-```
-
-### Step 6 — Monitor Attendance
-
-Use the Dashboard and Reports sections to monitor:
-
-- Overall attendance
-- Subject-wise attendance
-- Attendance trends
-- Safe-to-skip classes
-- Required classes to reach your target
-
-### Step 7 — Use the AI Assistant
-
-Ask natural-language questions about your attendance data using the built-in assistant.
+1. **Create an account** on the sign-up page.
+2. **Add subjects** and choose the weekdays each one is held on.
+3. **Review holidays.** Official holidays are preloaded; add custom ones if needed.
+4. **Record attendance** from the calendar. Use *Cancelled* when a class does not take place.
+5. **Check your status** on the dashboard and reports, or ask the assistant.
+6. **Plan ahead** with the Planner before taking a break.
+7. **Personalise** your theme, profile photo, export and notifications from Settings and the navbar avatar.
 
 ---
 
-## 🔐 Security
+## Security
 
-The project uses Supabase authentication and PostgreSQL Row Level Security.
-
-### Security Measures
-
-- User-specific database access
-- PostgreSQL Row Level Security
-- Supabase authentication
-- Public Supabase anon key only
-- No service-role key in frontend code
-- Local processing for the attendance assistant
-
-Each user should only be able to access their own attendance data.
-
-> **Important:** Never commit private API keys, service-role keys, passwords, or other sensitive credentials to GitHub.
+- Access is restricted by PostgreSQL **Row Level Security**: each user can select, insert and update only their own `user_data` row.
+- The Supabase **anon** key in client code is designed to be public. Never put the `service_role` key in this project.
+- The assistant processes data locally; no attendance data is sent to a third party.
+- If a legacy `users` table with plain-text passwords exists from an earlier version, drop it once the current setup is verified.
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
-- Password recovery is limited because the current authentication system uses username-based accounts.
-- Offline functionality depends on the current service-worker configuration.
-- Synchronization uses a last-write-wins approach.
-- Simultaneous edits from multiple devices may overwrite previous changes.
-- Built-in official holiday data currently covers 2026–2030.
-- The application is primarily designed for individual student attendance tracking.
+- **No password recovery.** Accounts use placeholder email addresses, so there is no reset-by-email flow.
+- **Service worker path.** `app.js` registers `/service_worker.js`, while the file is at `/js/service_worker.js`. Offline mode and installation may be affected until the path is corrected.
+- **Incomplete offline cache.** The cache list does not yet include every script (for example `ai_assistant.js`, `supabase.js` and the newer planner, profile and theme files).
+- **Concurrent edits.** Sync is last-write-wins; simultaneous edits on two devices can overwrite each other.
+- **Holiday coverage.** Official holidays are bundled for 2026 to 2030; other years use fixed national holidays plus estimated dates.
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
-Future improvements may include:
-
-- [ ] Improved offline support
-- [ ] Complete service-worker caching
-- [ ] Email-based authentication
-- [ ] Password recovery
+- [ ] Correct the service worker path and cache list for full offline support
+- [ ] Email-based accounts and password recovery
 - [ ] Per-subject attendance targets
-- [ ] Class timings
-- [ ] Per-class reminders
-- [ ] Import attendance from JSON
-- [ ] Improved analytics dashboard
-- [ ] More advanced attendance predictions
-- [ ] Optional LLM-powered assistant
-- [ ] Improved mobile UI
-- [ ] Multi-semester attendance management
+- [ ] Class timings with a next-class countdown and per-class reminders
+- [ ] Daily "today's classes" notification
+- [ ] Import from a JSON backup
+- [ ] Multi-semester support
+- [ ] Shareable attendance report card
+- [ ] Optional LLM-backed assistant via a serverless function
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions and suggestions are welcome.
+Contributions are welcome.
 
-### Contribution Steps
-
-1. Fork the repository.
-2. Create a new branch.
-
-```bash
-git checkout -b feature/new-feature
-```
-
-3. Make your changes.
-4. Test the application.
-5. Commit your changes.
-
-```bash
-git commit -m "Add new feature"
-```
-
-6. Push the branch.
-
-```bash
-git push origin feature/new-feature
-```
-
-7. Open a Pull Request.
+1. Fork the repository and create a feature branch.
+2. Make your changes. There is no build step, so edit the files and refresh the browser.
+3. Check the affected pages manually, including dark mode and a mobile viewport.
+4. Open a pull request describing the change and why it is needed.
 
 ---
 
-## 📄 License
+## License
 
-No specific open-source license has currently been added to this project.
-
-If you plan to distribute or accept external contributions, consider adding a license such as the **MIT License**.
+No license has been specified yet. Add a `LICENSE` file (for example, MIT) before distributing the project or accepting outside contributions.
 
 ---
 
-## 👩‍💻 Project
+## Author
 
-**Attendance Tracker**
+Built by [SaptaparnaDas-04](https://github.com/SaptaparnaDas-04).
 
-A simple, student-focused solution for making attendance management easier, faster, and more reliable.
-
-### 🔗 Live Demo
-
-**https://saptaattendancetracker.vercel.app/**
-
----
-
-⭐ If you find this project useful, consider giving the repository a star!
+If you find this project useful, consider giving the repository a star.
