@@ -1924,3 +1924,14 @@ select:hover {
        font-size: 16px;
    }
 }
+
+.user-badge .avatar {
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+.user-badge .avatar.has-pic {
+    font-size: 0;
+    color: transparent;
+}
