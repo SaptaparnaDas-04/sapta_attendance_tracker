@@ -1,32 +1,89 @@
 // ========================================
 // PROFILE PHOTO with crop screen
 // Tap the navbar avatar -> choose photo -> drag + zoom -> Save.
-// Saved in this browser only (localStorage "profilePic").
+// Saved to your Supabase account (user_data.data.profilePic) and cached in localStorage.
 // ========================================
 
 (function () {
     const KEY = "profilePic";
     const VIEW = 280;     // crop box size on screen (px)
-    const OUT = 256;      // saved image size (px)
+    const OUT = 128;      // saved image size (px), small on purpose so it syncs fast
 
-function applyPic() {
-    const av = document.getElementById("userAvatar");
-    if (!av) return;
-    const pic = localStorage.getItem(KEY);
-    if (pic) {
-        av.style.backgroundImage = 'url("' + pic + '")';
-        av.style.backgroundSize = "cover";
-        av.style.backgroundPosition = "center";
-        av.style.backgroundRepeat = "no-repeat";
-        av.style.fontSize = "0";
-        av.style.color = "transparent";
-        av.classList.add("has-pic");
-    } else {
-        ["backgroundImage", "backgroundSize", "backgroundPosition",
-         "backgroundRepeat", "fontSize", "color"].forEach(p => av.style[p] = "");
-        av.classList.remove("has-pic");
+    function applyPic() {
+        const av = document.getElementById("userAvatar");
+        if (!av) return;
+        const pic = localStorage.getItem(KEY);
+        if (pic) {
+            av.style.backgroundImage = 'url("' + pic + '")';
+            av.style.backgroundSize = "cover";
+            av.style.backgroundPosition = "center";
+            av.style.backgroundRepeat = "no-repeat";
+            av.style.fontSize = "0";
+            av.style.color = "transparent";
+            av.classList.add("has-pic");
+        } else {
+            ["backgroundImage", "backgroundSize", "backgroundPosition",
+             "backgroundRepeat", "fontSize", "color"].forEach(p => av.style[p] = "");
+            av.classList.remove("has-pic");
+        }
     }
-}
+
+    // ---------- Supabase sync (photo lives in user_data.data.profilePic) ----------
+    async function getUid() {
+        if (typeof supabaseClient === "undefined") return null;
+        const res = await supabaseClient.auth.getSession();
+        const s = res && res.data && res.data.session;
+        return s ? s.user.id : null;
+    }
+
+    async function savePicToServer(pic) {
+        try {
+            const uid = await getUid();
+            if (!uid) return false;
+            const cur = await supabaseClient.from("user_data").select("data").eq("user_id", uid).maybeSingle();
+            const merged = Object.assign({}, cur.data && cur.data.data, { profilePic: pic });
+            const up = await supabaseClient.from("user_data").upsert(
+                { user_id: uid, data: merged, updated_at: new Date().toISOString() },
+                { onConflict: "user_id" }
+            );
+            return !up.error;
+        } catch (e) { return false; }
+    }
+
+    async function syncPic() {
+        try {
+            const uid = await getUid();
+            if (!uid) return;
+
+            // Photo left on this browser by a different account? Drop it.
+            const owner = localStorage.getItem(KEY + "User");
+            if (owner && owner !== uid) {
+                localStorage.removeItem(KEY);
+                localStorage.removeItem(KEY + "Pending");
+                applyPic();
+            }
+            localStorage.setItem(KEY + "User", uid);
+
+            const local = localStorage.getItem(KEY);
+            const pending = localStorage.getItem(KEY + "Pending") === "1";
+
+            // Local change that never reached the server: push it now
+            if (local && pending) {
+                if (await savePicToServer(local)) localStorage.removeItem(KEY + "Pending");
+                return;
+            }
+
+            const res = await supabaseClient.from("user_data").select("data").eq("user_id", uid).maybeSingle();
+            if (res.error) return;
+            const server = res.data && res.data.data && res.data.data.profilePic;
+
+            if (server) {
+                if (server !== local) { localStorage.setItem(KEY, server); applyPic(); }
+            } else if (local) {
+                await savePicToServer(local);   // first upload, or the server copy was wiped
+            }
+        } catch (e) { /* offline: try again next page load */ }
+    }
 
     // ---------- Crop screen ----------
     function openCropper(img) {
@@ -117,9 +174,12 @@ function applyPic() {
             out.width = out.height = OUT;
             paint(out.getContext("2d"), OUT, false);
             try {
-                localStorage.setItem(KEY, out.toDataURL("image/jpeg", 0.85));
+                const dataUrl = out.toDataURL("image/jpeg", 0.8);
+                localStorage.setItem(KEY, dataUrl);
+                localStorage.setItem(KEY + "Pending", "1");
                 applyPic();
                 close();
+                savePicToServer(dataUrl).then(ok => { if (ok) localStorage.removeItem(KEY + "Pending"); });
             } catch (err) {
                 alert("⚠️ Could not save the photo (storage is full).");
             }
@@ -159,5 +219,6 @@ function applyPic() {
         });
 
         applyPic();
+        syncPic();
     });
 })();
