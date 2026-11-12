@@ -53,6 +53,20 @@
         .pl-pill { background: var(--primary-light, #e8edf5); color: var(--primary, #4a6cf7); }
         .pl-row input[type=range] { accent-color: var(--primary, #4a6cf7); }
         .pl-card h2 { color: inherit; }
+        /* ===== Theme-aware colours (follows Blue / Green / Purple / Dark) ===== */
+        .pl-card { border-top: 3px solid var(--primary); }
+        .pl-pill { background: var(--primary-light); color: var(--primary); }
+        .pl-row input[type=range] { accent-color: var(--primary); }
+        .pl-dates .primary-btn { background: var(--primary); }
+        .pl-dates .primary-btn:hover { background: var(--primary-hover); }
+        
+        body.dark-mode .pl-card { background: #1e1e2e; color: #e0e0e0; border-color: #2d2d3f; border-top-color: var(--primary); }
+        body.dark-mode .pl-card h2,
+        body.dark-mode .pl-name,
+        body.dark-mode .pl-pct { color: #e0e0e0; }
+        body.dark-mode .pl-pill { background: #2d2d3f; color: var(--primary); }
+        body.dark-mode .pl-dates input { background: #2d2d3f; color: #e0e0e0; border-color: #3d3d4f; color-scheme: dark; }
+        body.dark-mode .pl-chips span { background: #2d2d3f; color: #e0e0e0; }
     </style>
 </head>
 <body>
